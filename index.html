@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <meta charset="UTF-8">
+      <title>VK API Analyzer</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+
+  <body>
+
+    <div class="header">
+      <div class="image"></div>
+      <div class="text">
+          <p>Тестирование методов VK API</p>
+      </div>
+    </div>
+
+    <div id="content" align="center"></div>
+
+    <script type="text/babel">
+
+      const contentElement = document.getElementById("content");
+
+      var MenuButton = React.createClass({
+          render: function() {
+              return (
+                <a href={this.props.url}><button className="menu-button">{this.props.name}</button></a>
+              );
+          }
+      });
+
+      ReactDOM.render(
+        <div>
+          <MenuButton name="Протестировать метод" url="./pages/test.html"/>
+          <br/>
+          <MenuButton name="Очередь тестирования" url="./pages/queue.html"/>
+          <br/>
+          <MenuButton name="История тестирования" url="./pages/history.html"/>
+        </div>,
+        contentElement
+      );
+
+    </script>
+
+  </body>
+
+</html>

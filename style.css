@@ -1,0 +1,55 @@
+.menu-button {
+	background-color:#759FD1;
+	-moz-border-radius:42px;
+	-webkit-border-radius:42px;
+  width: 600px;
+	border-radius: 42px;
+	border:1px solid #21bceb;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Verdana;
+	font-size:17px;
+	padding:18px 76px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #00c0fa;
+  margin-top: 20px;
+}
+.menu-button:hover {
+	background-color:#519BF6;
+}
+.menu-button:active {
+	position:relative;
+	top:1px;
+}
+
+.header {
+    margin-top: 10px;
+    border-radius: 2px;
+    border:2px solid #8ba1bc;
+    background-color: #759fd1;
+}
+
+.header .image {
+  margin-left: 10px;
+  background: url("./res/vk-logo-small.png")
+              no-repeat;
+    width: 80px;
+    height: 80px;
+    border:2px;
+}
+
+.header .text {
+    font: x-large Verdana;
+}
+
+.header .image,
+.header .text {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.header .text {
+  color: white;
+  height: 80px;
+}
