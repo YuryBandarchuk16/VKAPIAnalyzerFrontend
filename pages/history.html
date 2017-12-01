@@ -74,7 +74,8 @@
               var responseText = xmlHttp.responseText;
               callbackFunction(xmlHttp.responseText);
             }
-            xmlHttp.onerror = function() {
+            xmlHttp.onerror = function(e) {
+              console.log(e);
               callbackFunction("[]");
             }
             xmlHttp.send();
