@@ -4,8 +4,8 @@
   <head>
       <meta charset="UTF-8">
       <title>VK API Analyzer</title>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
       <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
       <link rel="stylesheet" type="text/css" href="../style.css">
   </head>
@@ -39,13 +39,19 @@
       }
 
       var Method = React.createClass({
+        showGraphButtonClick: function() {
+            localStorage["plotId"] = this.props.id;
+            localStorage["requestName"] = this.props.name;
+            location.href = "./graph.html";
+        },
+
         render: function() {
           return (
             <li className="method-item">
               <div>
                 <div className="method-item-name">{this.props.name}</div>
                 <div className="method-item-duration">Тип тестирования: {this.props.duration}</div>
-                <a href="./graph.html"><button className="item-button">Показать график</button></a>
+                <button className="item-button" onClick={this.showGraphButtonClick}>Показать график</button>
               </div>
             </li>
           );
@@ -122,7 +128,8 @@
                         } else if (element.measureType == 2) {
                           durationMessage = "24 часа";
                         }
-                        return (<Method key={element.id}
+                        return (<Method id={element.id}
+                                        key={element.id}
                                         name={element.methodName}
                                         duration={durationMessage}/>);
                       })

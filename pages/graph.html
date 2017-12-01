@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <meta charset="UTF-8">
+      <title>VK API Analyzer</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="../style.css">
+  </head>
+
+  <body>
+
+    <div class="header">
+      <a href="../index.html"><div class="image"></div></a>
+      <div class="text">
+          <p>График</p>
+      </div>
+    </div>
+
+    <div id="content" align="center">
+      <div class="methods">
+        <ul class="methods-list">
+          <li class="method-item-empty">
+            <div>
+              <div class="method-item-name">Данные загружаются...</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="graph" align="center"></div>
+
+    <script>
+
+      const contentElement = document.getElementById("content");
+
+      function createRequest(method, url) {
+        var xmlHttpRequest = new XMLHttpRequest();
+        if ("withCredentials" in xmlHttpRequest) {
+            xmlHttpRequest.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+            xmlHttpRequest = new XDomainRequest();
+            xmlHttpRequest.open(method, url);
+        } else {
+            xmlHttpRequest = null;
+        }
+        return xmlHttpRequest;
+      }
+
+      var plotId = localStorage["plotId"];
+
+      const urlAddress = "https://vk-api-analyzer.us-east-2.elasticbeanstalk.com/getPlot/" + plotId;
+      var xmlHttp = createRequest("GET", urlAddress);
+      xmlHttp.onload = function() {
+        var responseText = xmlHttp.responseText;
+        callbackFunction(xmlHttp.responseText);
+      }
+      xmlHttp.send();
+
+      function EmptyTrace(name) {
+        this.x = [];
+        this.y = [];
+        this.name = name;
+        this.mode = 'lines+markers';
+        this.addPoint = function(yCoord, xCoord) {
+          this.x.push(xCoord);
+          this.y.push(yCoord);
+        }
+      }
+
+      function callbackFunction(responseJSON) {
+        var responseArray = JSON.parse(responseJSON);
+
+        var fullTime = new EmptyTrace("Full Time");
+        var processingTime = new EmptyTrace("Processing Time");
+        var networkTime = new EmptyTrace("Network Time");
+
+        for (var i = 0; i < responseArray.length; i += 10) {
+          var currentObject = responseArray[i];
+          fullTime.addPoint(currentObject.fullTime, i + 1);
+          processingTime.addPoint(currentObject.processingTime, i + 1);
+          networkTime.addPoint(currentObject.networkTime, i + 1);
+        }
+
+        var data = [fullTime, processingTime, networkTime];
+
+        var layout = {
+          title: "График времени выполнения запросов " + localStorage["requestName"],
+          width: 1000
+        };
+
+        document.getElementById("content").remove();
+
+        Plotly.newPlot('graph', data, layout);
+
+      }
+
+    </script>
+
+  </body>
+
+</html>
