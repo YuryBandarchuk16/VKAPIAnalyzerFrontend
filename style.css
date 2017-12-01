@@ -11,8 +11,8 @@
 	font-family: Verdana;
 	font-size: 17px;
 	padding: 18px 76px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #00c0fa;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #00c0fa;
   margin-top: 20px;
 }
 .menu-button:hover {
@@ -22,8 +22,6 @@
 	position:relative;
 	top:1px;
 }
-
-
 
 .item-button {
 	background-color: #759fd1;
@@ -38,8 +36,8 @@
 	font-family: Verdana;
 	font-size: 15px;
 	padding: 5px 76px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #00c0fa;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #00c0fa;
   margin-top: 5px;
 }
 .item-button:hover {
@@ -122,4 +120,35 @@
   align: center;
   color: grey;
   width: 375px;
+}
+
+
+.action-button {
+	background-color: #759fd1;
+	-moz-border-radius: 32px;
+	-webkit-border-radius: 32px;
+  width: 90px;
+	border-radius: 0px;
+	border: 1px solid #21bceb;
+	display: inline;
+	cursor: pointer;
+	color: #ffffff;
+	font-family: Verdana;
+	font-size: 15px;
+	padding: 2px;
+  white-space: nowrap;
+  text-align: center;
+  padding-left: 0px;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #00c0fa;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+.action-button:hover {
+	background-color:#519bf6;
+}
+
+.action-button:active {
+	position:relative;
+	top:1px;
 }

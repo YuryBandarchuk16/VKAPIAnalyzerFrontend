@@ -13,7 +13,7 @@
   <body>
 
     <div class="header">
-      <div class="image"></div>
+      <a href="../index.html"><div class="image"></div></a>
       <div class="text">
           <p>Протестировать метод</p>
       </div>
@@ -37,6 +37,107 @@
         }
         return xmlHttpRequest;
       }
+
+      var Method = React.createClass({
+
+        startTesting: function(type) {
+          const urlAddress = "http://vk-api-analyzer.us-east-2.elasticbeanstalk.com/testMethod/" + this.props.name + "/" + type;
+          var xmlHttp = createRequest("GET", urlAddress);
+          var alertMessage = "Тестирование метода '" + this.props.name + "' успешно начато!";
+          xmlHttp.send();
+          alert(alertMessage);
+        },
+
+        render: function() {
+          return (
+            <li className="method-item">
+              <div>
+                <div className="method-item-name">{this.props.name}</div>
+                <button className="action-button" onClick={this.startTesting.bind(this, "0")}>1 минута</button>
+                <button className="action-button" onClick={this.startTesting.bind(this, "1")}>1 час</button>
+                <button className="action-button" onClick={this.startTesting.bind(this, "2")}>24 часа</button>
+              </div>
+            </li>
+          );
+        }
+      });
+
+      var EmptyMethod = React.createClass({
+        render: function() {
+          return (
+            <li className="method-item-empty">
+              <div>
+                <div className="method-item-name">{this.props.description}</div>
+              </div>
+            </li>
+          );
+        }
+      });
+
+      var MethodsList = React.createClass({
+
+          loadMethods: function() {
+            const urlAddress = "http://vk-api-analyzer.us-east-2.elasticbeanstalk.com/methods"
+            var xmlHttp = createRequest("GET", urlAddress);
+            var callbackFunction = this.methodsLoaded;
+            xmlHttp.onload = function() {
+              var responseText = xmlHttp.responseText;
+              callbackFunction(xmlHttp.responseText);
+            }
+            xmlHttp.onerror = function() {
+              callbackFunction("[]");
+            }
+            xmlHttp.send();
+          },
+
+          methodsLoaded: function(responseJSON) {
+            var parsedMethods = JSON.parse(responseJSON);
+            this.setState({
+              methodsArray: parsedMethods
+            });
+          },
+
+          getInitialState: function() {
+            this.loadMethods();
+            return {
+              methodsArray: null
+            }
+          },
+
+          render: function() {
+            var methodsArray = this.state.methodsArray;
+            var descriptionMessage = "Данные загружаются...";
+            if (methodsArray !== null && methodsArray.length === 0) {
+              descriptionMessage = "Нет методов доступных для тестирования :(";
+            }
+            if (methodsArray == null || (methodsArray !== null && methodsArray.length === 0)) {
+              return (
+                <div className="methods">
+                  <ul className="methods-list">
+                    <EmptyMethod description={descriptionMessage}/>
+                  </ul>
+                </div>
+              );
+            } else {
+              return (
+                <div className="methods">
+                  <ul className="methods-list">
+                    {
+                      this.state.methodsArray.map(function(element) {
+                        return (<Method key={element} name={element}/>);
+                      })
+                    }
+                  </ul>
+                </div>
+              );
+            }
+          }
+      });
+
+      ReactDOM.render(
+        <MethodsList/>,
+        contentElement
+      );
 
     </script>
 
