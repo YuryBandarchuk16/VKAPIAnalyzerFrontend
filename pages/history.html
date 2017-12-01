@@ -67,7 +67,7 @@
       var MethodsList = React.createClass({
 
           loadMethods: function() {
-            const urlAddress = "http://vk-api-analyzer.us-east-2.elasticbeanstalk.com/tests"
+            const urlAddress = "https://vk-api-analyzer.us-east-2.elasticbeanstalk.com/tests"
             var xmlHttp = createRequest("GET", urlAddress);
             var callbackFunction = this.methodsLoaded;
             xmlHttp.onload = function() {

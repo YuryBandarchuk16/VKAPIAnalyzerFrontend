@@ -41,7 +41,7 @@
       var Method = React.createClass({
 
         startTesting: function(type) {
-          const urlAddress = "http://vk-api-analyzer.us-east-2.elasticbeanstalk.com/testMethod/" + this.props.name + "/" + type;
+          const urlAddress = "https://vk-api-analyzer.us-east-2.elasticbeanstalk.com/testMethod/" + this.props.name + "/" + type;
           var xmlHttp = createRequest("GET", urlAddress);
           var alertMessage = "Тестирование метода '" + this.props.name + "' успешно начато!";
           xmlHttp.send();
@@ -77,7 +77,7 @@
       var MethodsList = React.createClass({
 
           loadMethods: function() {
-            const urlAddress = "http://vk-api-analyzer.us-east-2.elasticbeanstalk.com/methods"
+            const urlAddress = "https://vk-api-analyzer.us-east-2.elasticbeanstalk.com/methods"
             var xmlHttp = createRequest("GET", urlAddress);
             var callbackFunction = this.methodsLoaded;
             xmlHttp.onload = function() {
