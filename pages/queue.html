@@ -1,1 +1,45 @@
-<h1> Hello! This is Queue! </h1>
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <meta charset="UTF-8">
+      <title>VK API Analyzer</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="../style.css">
+  </head>
+
+  <body>
+
+    <div class="header">
+      <div class="image"></div>
+      <div class="text">
+          <p>Очередь тестирования</p>
+      </div>
+    </div>
+
+    <div id="content" align="center"></div>
+
+    <script type="text/babel">
+
+      const contentElement = document.getElementById("content");
+
+      function createRequest(method, url) {
+        var xmlHttpRequest = new XMLHttpRequest();
+        if ("withCredentials" in xmlHttpRequest) {
+            xmlHttpRequest.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+            xmlHttpRequest = new XDomainRequest();
+            xmlHttpRequest.open(method, url);
+        } else {
+            xmlHttpRequest = null;
+        }
+        return xmlHttpRequest;
+      }
+
+    </script>
+
+  </body>
+
+</html>

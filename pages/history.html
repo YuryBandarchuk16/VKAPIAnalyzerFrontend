@@ -1,1 +1,145 @@
-<h1> Hello! This is History! </h1>
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <meta charset="UTF-8">
+      <title>VK API Analyzer</title>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+      <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="../style.css">
+  </head>
+
+  <body>
+
+    <div class="header">
+      <div class="image"></div>
+      <div class="text">
+          <p>История тестирования</p>
+      </div>
+    </div>
+
+    <div id="content" align="center"></div>
+
+    <script type="text/babel">
+
+      const contentElement = document.getElementById("content");
+
+      function createRequest(method, url) {
+        var xmlHttpRequest = new XMLHttpRequest();
+        if ("withCredentials" in xmlHttpRequest) {
+            xmlHttpRequest.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+            xmlHttpRequest = new XDomainRequest();
+            xmlHttpRequest.open(method, url);
+        } else {
+            xmlHttpRequest = null;
+        }
+        return xmlHttpRequest;
+      }
+
+      var Method = React.createClass({
+        render: function() {
+          return (
+            <li className="method-item">
+              <div>
+                <div className="method-item-name">{this.props.name}</div>
+                <div className="method-item-duration">Тип тестирования: {this.props.duration}</div>
+                <a href="./graph.html"><button className="item-button">Показать график</button></a>
+              </div>
+            </li>
+          );
+        }
+      });
+
+      var EmptyMethod = React.createClass({
+        render: function() {
+          return (
+            <li className="method-item-empty">
+              <div>
+                <div className="method-item-name">{this.props.description}</div>
+              </div>
+            </li>
+          );
+        }
+      });
+
+      var MethodsList = React.createClass({
+
+          loadMethods: function() {
+            const urlAddress = "http://vk-api-analyzer.us-east-2.elasticbeanstalk.com/tests"
+            var xmlHttp = createRequest("GET", urlAddress);
+            var callbackFunction = this.methodsLoaded;
+            xmlHttp.onload = function() {
+              var responseText = xmlHttp.responseText;
+              callbackFunction(xmlHttp.responseText);
+            }
+            xmlHttp.onerror = function() {
+              callbackFunction("[]");
+            }
+            xmlHttp.send();
+          },
+
+          methodsLoaded: function(responseJSON) {
+            var parsedMethods = JSON.parse(responseJSON);
+            parsedMethods.reverse();
+            this.setState({
+              methodsArray: parsedMethods
+            });
+          },
+
+          getInitialState: function() {
+            this.loadMethods();
+            return {
+              methodsArray: null
+            }
+          },
+
+          render: function() {
+            var methodsArray = this.state.methodsArray;
+            var descriptionMessage = "Данные загружаются...";
+            if (methodsArray !== null && methodsArray.length === 0) {
+              descriptionMessage = "История тестирования пуста :(";
+            }
+            if (methodsArray == null || (methodsArray !== null && methodsArray.length === 0)) {
+              return (
+                <div className="methods">
+                  <ul className="methods-list">
+                    <EmptyMethod description={descriptionMessage}/>
+                  </ul>
+                </div>
+              );
+            } else {
+              return (
+                <div className="methods">
+                  <ul className="methods-list">
+                    {
+                      this.state.methodsArray.map(function(element) {
+                        var durationMessage = "1 минута";
+                        if (element.measureType == 1) {
+                          durationMessage = "1 час";
+                        } else if (element.measureType == 2) {
+                          durationMessage = "24 часа";
+                        }
+                        return (<Method key={element.id}
+                                        name={element.methodName}
+                                        duration={durationMessage}/>);
+                      })
+                    }
+                  </ul>
+                </div>
+              );
+            }
+          }
+      });
+
+      ReactDOM.render(
+        <MethodsList/>,
+        contentElement
+      );
+
+    </script>
+
+  </body>
+
+</html>
