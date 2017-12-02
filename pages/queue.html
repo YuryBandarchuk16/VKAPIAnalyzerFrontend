@@ -38,6 +38,137 @@
         return xmlHttpRequest;
       }
 
+
+
+      var Method = React.createClass({
+
+        render: function() {
+          return (
+            <li className="method-item">
+              <div>
+                <div className="method-item-queue-name">{this.props.name}</div>
+                <div className="method-item-duration-all">Длительность тестирования: {this.props.duration} секунд</div>
+                <div className="method-item-duration-all">Осталось {this.props.seconds} секунд до завершения тестирования</div>
+              </div>
+            </li>
+          );
+        }
+      });
+
+      var EmptyMethod = React.createClass({
+        render: function() {
+          return (
+            <li className="method-item-empty">
+              <div>
+                <div className="method-item-name">{this.props.description}</div>
+              </div>
+            </li>
+          );
+        }
+      });
+
+      // Add setInterval/clearInterval
+      // Correct секунд/секунды error
+
+      var MethodsList = React.createClass({
+
+          loadMethods: function() {
+            const urlAddress = "https://vk-api-analyzer.us-east-2.elasticbeanstalk.com/queue"
+            var xmlHttp = createRequest("GET", urlAddress);
+            var callbackFunction = this.methodsLoaded;
+            xmlHttp.onload = function() {
+              var responseText = xmlHttp.responseText;
+              callbackFunction(xmlHttp.responseText);
+            }
+            xmlHttp.onerror = function(e) {
+              console.log(e);
+              callbackFunction("[]");
+            }
+            xmlHttp.send();
+          },
+
+          methodsLoaded: function(responseJSON) {
+            var parsedMethods = JSON.parse(responseJSON);
+            if (parsedMethods !== null) {
+              for (var i = 0; i < parsedMethods.length; i++) {
+                var el = parsedMethods[i];
+                var toSecondsRemaining = Math.round((el.duration - el.currentTime + el.startTime) / 1000.0);
+                el.seconds = toSecondsRemaining;
+                el.id = el.name + "#" + i;
+                el.duration = Math.round(el.duration / 1000.0);
+              }
+            }
+            parsedMethods.sort(function(a, b) {
+              if (a.seconds < b.seconds) {
+                return -1;
+              }
+              if (a.second > b.seconds) {
+                return 1;
+              }
+              return 0;
+            });
+            this.setState({
+              methodsArray: parsedMethods
+            });
+          },
+
+          getInitialState: function() {
+            this.loadMethods();
+            return {
+              methodsArray: null
+            }
+          },
+
+          render: function() {
+            var methodsArray = this.state.methodsArray;
+            var descriptionMessage = "Данные загружаются...";
+            var oneValidMethodExists = false;
+            if (methodsArray !== null) {
+              for (var i = 0; i < methodsArray.length; i++) {
+                if (methodsArray[i].seconds > 0) {
+                  oneValidMethodExists = true;
+                  break;
+                }
+              }
+              if (oneValidMethodExists === false) {
+                descriptionMessage = "История тестирования пуста :(";
+              }
+            }
+            if (oneValidMethodExists === false) {
+              return (
+                <div className="methods">
+                  <ul className="methods-list">
+                    <EmptyMethod description={descriptionMessage}/>
+                  </ul>
+                </div>
+              );
+            } else {
+              return (
+                <div className="methods-queue">
+                  <ul className="methods-list">
+                    {
+                      this.state.methodsArray.filter(function(element) {
+                        return element.seconds > 0;
+                      }).map(function(element) {
+                        console.log(element.id);
+                        return (<Method key={element.id}
+                                name={element.name}
+                                duration={element.duration}
+                                seconds={element.seconds}/>);
+                      })
+                    }
+                  </ul>
+                </div>
+              );
+            }
+          }
+      });
+
+      ReactDOM.render(
+        <MethodsList/>,
+        contentElement
+      );
+
     </script>
 
   </body>

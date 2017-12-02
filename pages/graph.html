@@ -52,6 +52,10 @@
       }
 
       var plotId = localStorage["plotId"];
+      var defaultLayout = {
+        title: "График времени выполнения запросов " + localStorage["requestName"],
+        width: 1000
+      };
 
       const urlAddress = "https://vk-api-analyzer.us-east-2.elasticbeanstalk.com/getPlot/" + plotId;
       var xmlHttp = createRequest("GET", urlAddress);
@@ -74,12 +78,16 @@
 
       function callbackFunction(responseJSON) {
         var responseArray = JSON.parse(responseJSON);
+        var data = getDataFromArray(responseArray, 10);
+        drawPlot(data, defaultLayout);
+      }
 
+      function getDataFromArray(responseArray, step) {
         var fullTime = new EmptyTrace("Full Time");
         var processingTime = new EmptyTrace("Processing Time");
         var networkTime = new EmptyTrace("Network Time");
 
-        for (var i = 0; i < responseArray.length; i += 10) {
+        for (var i = 0; i < responseArray.length; i += step) {
           var currentObject = responseArray[i];
           fullTime.addPoint(currentObject.fullTime, i + 1);
           processingTime.addPoint(currentObject.processingTime, i + 1);
@@ -87,16 +95,17 @@
         }
 
         var data = [fullTime, processingTime, networkTime];
+        return data;
+      }
 
-        var layout = {
-          title: "График времени выполнения запросов " + localStorage["requestName"],
-          width: 1000
-        };
 
-        document.getElementById("content").remove();
 
+      function drawPlot(data, layout) {
+        const contentElement = document.getElementById("content");
+        if (contentElement !== null) {
+          contentElement.remove();
+        }
         Plotly.newPlot('graph', data, layout);
-
       }
 
     </script>

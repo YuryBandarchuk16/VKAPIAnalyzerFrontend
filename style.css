@@ -88,6 +88,11 @@ body {
   margin: 0 auto;
 }
 
+.methods-queue {
+  width: 550px;
+  margin: 0 auto;
+}
+
 .methods-list {
   padding: 0;
   width: 100%;
@@ -124,6 +129,20 @@ body {
   align: center;
   color: grey;
   width: 375px;
+}
+
+.method-item-queue-name {
+  font-size: 20px;
+  align: center;
+  width: 550px;
+  font-weight: bold;
+}
+
+.method-item-duration-all {
+  font-size: 18px;
+  align: center;
+  color: grey;
+  width: 550px;
 }
 
 
