@@ -23,6 +23,10 @@
 	top:1px;
 }
 
+body {
+  resize: none;
+}
+
 .item-button {
 	background-color: #759fd1;
 	-moz-border-radius: 32px;
