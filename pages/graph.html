@@ -94,7 +94,7 @@
       slider.oninput = function() {
         density.innerHTML = "<p id=\"density\">Плотность графика: " + everyWordEndings[this.value] + " " + this.value + " " + pointWordEndings[this.value] + "</p>";
         var data = getDataFromArray(allPoints, parseInt(this.value));
-        lastSliderValue = this.value;
+        lastSliderValue = parseInt(this.value);
         drawPlot(data, defaultLayout);
       }
 
