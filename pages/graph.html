@@ -33,12 +33,53 @@
     </div>
 
     <div id="graph" align="center"></div>
+    <div id="buttons" align="center">
+      <button class="item-button" onClick="switchGraph()">Сменить график</button>
+    </div>
     <div id="slidecontainer" align="center">
       <div id="density"><p>Плотность графика: каждые 10 точек</p></div>
       <input type="range" min="1" max="10" value="10" class="slider" id="myRange">
     </div>
 
     <script>
+
+      const buttonsManager = document.getElementById("buttons");
+
+      function createSortButton() {
+        var button = document.createElement('button');
+        button.className += "item-button";
+        button.id = "changeOrderButton";
+        button.onclick = function() {
+          needSort ^= true;
+          redrawGraph();
+        };
+        button.innerHTML = "Изменить порядок";
+        buttonsManager.appendChild(button);
+      }
+
+      function removeSortButton() {
+        var button = document.getElementById("changeOrderButton");
+        if (button !== null) {
+          button.remove();
+        }
+      }
+
+      function redrawGraph() {
+        var data = getDataFromArray(allPoints, lastSliderValue);
+        drawPlot(data, defaultLayout);
+      }
+
+      var needSort = false;
+
+      function switchGraph() {
+        showBar ^= true;
+        if (showBar) {
+            createSortButton();
+        } else {
+          removeSortButton();
+        }
+        redrawGraph();
+      }
 
       const contentElement = document.getElementById("content");
 
@@ -48,9 +89,12 @@
       var slider = document.getElementById("myRange");
       var density = document.getElementById("density");
 
+      var lastSliderValue = 10;
+
       slider.oninput = function() {
         density.innerHTML = "<p id=\"density\">Плотность графика: " + everyWordEndings[this.value] + " " + this.value + " " + pointWordEndings[this.value] + "</p>";
         var data = getDataFromArray(allPoints, parseInt(this.value));
+        lastSliderValue = this.value;
         drawPlot(data, defaultLayout);
       }
 
@@ -70,7 +114,13 @@
       var plotId = localStorage["plotId"];
       var defaultLayout = {
         title: "График времени выполнения запросов " + localStorage["requestName"],
-        width: 1000
+        width: 1000,
+        xaxis: {
+          title: "Номер теста"
+        },
+        yaxis: {
+          title: "Время выполнения"
+        }
       };
 
       const urlAddress = "https://vk-api-analyzer.us-east-2.elasticbeanstalk.com/getPlot/" + plotId;
@@ -94,6 +144,8 @@
 
       var allPoints = [];
 
+      var showBar = false;
+
       function callbackFunction(responseJSON) {
         var responseArray = JSON.parse(responseJSON);
         allPoints = responseArray;
@@ -106,14 +158,33 @@
         var processingTime = new EmptyTrace("Processing Time");
         var networkTime = new EmptyTrace("Network Time");
 
+        var processingTimeBarPoints = [];
+        var xAxisPoints = [];
+
         for (var i = 0; i < responseArray.length; i += step) {
           var currentObject = responseArray[i];
+          xAxisPoints.push(i + 1);
+          processingTimeBarPoints.push(currentObject.processingTime);
           fullTime.addPoint(currentObject.fullTime, i + 1);
           processingTime.addPoint(currentObject.processingTime, i + 1);
           networkTime.addPoint(currentObject.networkTime, i + 1);
         }
 
-        var data = [fullTime, processingTime, networkTime];
+        console.log("HELLO");
+        console.log(needSort);
+        if (needSort) {
+          processingTimeBarPoints = processingTimeBarPoints.sort();
+        }
+
+        var data = [
+        {
+            type: 'bar',
+            x: xAxisPoints,
+            y: processingTimeBarPoints,
+        }];
+        if (!showBar) {
+          data = [fullTime, networkTime, processingTime];
+        }
         return data;
       }
 
