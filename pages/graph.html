@@ -42,11 +42,14 @@
 
       const contentElement = document.getElementById("content");
 
+      var everyWordEndings = ["каждые", "каждая", "каждые", "каждые", "каждые", "каждые", "каждые", "каждые", "каждые", "каждые", "каждые"];
+      var pointWordEndings = ["точек", "точка", "точки", "точки", "точки", "точек", "точек", "точек", "точек", "точек", "точек"];
+
       var slider = document.getElementById("myRange");
       var density = document.getElementById("density");
 
       slider.oninput = function() {
-        density.innerHTML = "<p id=\"density\">Плотность графика: каждые " + this.value + " точек</p>";
+        density.innerHTML = "<p id=\"density\">Плотность графика: " + everyWordEndings[this.value] + " " + this.value + " " + pointWordEndings[this.value] + "</p>";
         var data = getDataFromArray(allPoints, parseInt(this.value));
         drawPlot(data, defaultLayout);
       }

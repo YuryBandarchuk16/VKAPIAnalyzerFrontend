@@ -161,7 +161,6 @@
                       this.state.methodsArray.filter(function(element) {
                         return element.seconds > 0;
                       }).map(function(element) {
-                        console.log(element.id);
                         return (<Method key={element.id}
                                 name={element.name}
                                 duration={element.duration}
