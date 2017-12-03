@@ -33,10 +33,23 @@
     </div>
 
     <div id="graph" align="center"></div>
+    <div id="slidecontainer" align="center">
+      <div id="density"><p>Плотность графика: каждые 10 точек</p></div>
+      <input type="range" min="1" max="10" value="10" class="slider" id="myRange">
+    </div>
 
     <script>
 
       const contentElement = document.getElementById("content");
+
+      var slider = document.getElementById("myRange");
+      var density = document.getElementById("density");
+
+      slider.oninput = function() {
+        density.innerHTML = "<p id=\"density\">Плотность графика: каждые " + this.value + " точек</p>";
+        var data = getDataFromArray(allPoints, parseInt(this.value));
+        drawPlot(data, defaultLayout);
+      }
 
       function createRequest(method, url) {
         var xmlHttpRequest = new XMLHttpRequest();
@@ -76,8 +89,11 @@
         }
       }
 
+      var allPoints = [];
+
       function callbackFunction(responseJSON) {
         var responseArray = JSON.parse(responseJSON);
+        allPoints = responseArray;
         var data = getDataFromArray(responseArray, 10);
         drawPlot(data, defaultLayout);
       }
