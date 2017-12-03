@@ -87,6 +87,16 @@
             xmlHttp.send();
           },
 
+          updateMethodsTime: function() {
+            var updatedMethods = this.state.methodsArray.map(function(element) {
+              element.seconds -= 1;
+              return element;
+            });
+            this.setState({
+              methodsArray: updatedMethods
+            });
+          },
+
           methodsLoaded: function(responseJSON) {
             var parsedMethods = JSON.parse(responseJSON);
             if (parsedMethods !== null) {
@@ -110,6 +120,7 @@
             this.setState({
               methodsArray: parsedMethods
             });
+            setInterval(this.updateMethodsTime, 1000);
           },
 
           getInitialState: function() {
